@@ -94,6 +94,10 @@ func merge(a: [Int], start: Int, mid: Int, end: Int) -> [Int] {
     return array
 }
 
+//let arrayA = [1,2,3,4]
+//let arrab: [Int] = arrayA.reversed()
+//print(arrab)
+
 func mergeSort(array: [Int], start: Int, end: Int) {
     if start < end {
         let mid = Int((start + end) / 2)
@@ -104,3 +108,33 @@ func mergeSort(array: [Int], start: Int, end: Int) {
 }
 //identify anagrams in a list of words
 mergeSort(array: exampleArray, start: 0, end: 6)
+
+func reverseArray(_ array: [Int], start: Int, end: Int) -> [Int] {
+    var start = start, end = end, array = array
+    while start < end {
+        array.swapAt(start, end)
+        start += 1
+        end -= 1
+    }
+    return array
+}
+
+func nextPermutation(_ array: [Int]) -> [Int] {
+    var k = array.count - 2, array = array
+    while k >= 0 && array[k] >= array[k+1] {
+        k -= 1
+    }
+    if k == -1 {
+        return array.reversed()
+    }
+    for i in (k..<array.count).reversed() {
+        if array[i] > array[k] {
+            array.swapAt(i, k)
+            break
+        }
+    }
+    return reverseArray(array, start: k+1, end: array.count-1)
+}
+
+var arrayNextPermutation = [1,1,3]
+nextPermutation(arrayNextPermutation)
