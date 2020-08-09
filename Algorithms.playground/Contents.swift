@@ -218,7 +218,7 @@ func addStringsInts(_ s1: String, _ s2: String) -> String {
     var res = [Int](), p1 = s1.count-1, p2 = s2.count-1, carry = 0
     while p1 >= 0 || p2 >= 0 {
         let x1 = p1 >= 0 ? Int(s1[s1.index(s1.startIndex, offsetBy: p1)].wholeNumberValue ?? 0) : 0
-        let x2 = p2 >= 0 ? Int(s1[s1.index(s1.startIndex, offsetBy: p2)].wholeNumberValue ?? 0) : 0
+        let x2 = p2 >= 0 ? Int(s2[s2.index(s2.startIndex, offsetBy: p2)].wholeNumberValue ?? 0) : 0
         let value = (x1 + x2 + carry) % 10
         carry = (x1 + x2 + carry) / 10
         res.append(value)
@@ -228,6 +228,35 @@ func addStringsInts(_ s1: String, _ s2: String) -> String {
     if carry != 0 {
         res.append(carry)
     }
-    return res.reversed().map { String($0) }
+    return res.reversed().map { String($0) }.joined()
 }
-addStringsInts("95", "1")
+addStringsInts("107", "94")
+
+func minTimeDifference(_ times: [String]) -> Int {
+    var timeSeenBuckets: [Bool] = Array(repeating: false, count: 24*60)
+    for time in times {
+        let components = time.components(separatedBy: ":")
+        let totalMinutes = (Int(components[0]) ?? 0) * 60 + (Int(components[1]) ?? 1)
+        print(totalMinutes)
+        if timeSeenBuckets[totalMinutes] {
+            return 0
+        } else {
+            timeSeenBuckets[totalMinutes] = true
+        }
+    }
+    var firstTimeSeen: Int?, prevTimeSeen: Int?, minDiff = Int.max
+    for i in 0..<1440 {
+        if timeSeenBuckets[i] {
+            if firstTimeSeen == nil {
+                firstTimeSeen = i
+                prevTimeSeen = i
+            } else {
+                minDiff = min(minDiff, min(i-prevTimeSeen!, 1440-i+prevTimeSeen!)) //check clockwise and counterclockwise
+                prevTimeSeen = i
+            }
+        }
+    }
+    minDiff = min(minDiff, min(prevTimeSeen!-firstTimeSeen!, 1440-prevTimeSeen!+firstTimeSeen!)) //check the extremes
+    return minDiff
+}
+minTimeDifference(["05:31","22:08","00:35"])
