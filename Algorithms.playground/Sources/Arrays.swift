@@ -15,50 +15,42 @@ public func insertionSort(a: [Int]) -> [Int] {
 }
 
 
-func merge(a: [Int], start: Int, mid: Int, end: Int) -> [Int] {
-    var array = a
-    var tempArray = Array(repeating: 0, count: end - start + 1)
-    var i = start
-    var j = mid + 1
-    var k = 0
+public func mergeSort<Element>(_ array: [Element]) -> [Element] where Element: Comparable {
+    guard array.count > 1 else { return array }
+    let middle = array.count/2
+    let left = mergeSort(Array(array[..<middle]))
+    let right = mergeSort(Array(array[middle...]))
+    return merge(left, right)
+}
+
+private func merge<Element>(_ left: [Element], _ right: [Element]) -> [Element] where Element: Comparable {
+    var leftIndex = 0, rightIndex = 0, result = [Element]()
     
-    while i <= mid && j <= end {
-        if array[i] <= array[j] {
-            tempArray[k] = array[i]
-            k += 1
-            i += 1
+    while leftIndex < left.count && rightIndex < right.count {
+        let leftElement = left[leftIndex]
+        let rightElement = right[rightIndex]
+        
+        if leftElement < rightElement {
+            result.append(leftElement)
+            leftIndex += 1
+        } else if leftElement > rightElement {
+            result.append(rightElement)
+            rightIndex += 1
         } else {
-            tempArray[k] = array[j]
-            k += 1
-            j += 1
+            result.append(leftElement)
+            leftIndex += 1
+            result.append(rightElement)
+            rightIndex += 1
         }
     }
     
-    while i <= mid {
-        tempArray[k] = array[i]
-        k+=1
-        i+=1
+    if leftIndex < left.count {
+        result.append(contentsOf: left[leftIndex...])
     }
-    
-    while j <= end {
-        tempArray[k] = array[j]
-        k += 1
-        j += 1
+    if rightIndex < right.count {
+        result.append(contentsOf: right[rightIndex...])
     }
-    
-    for i in start...end {
-        array[i] = tempArray[i-start]
-    }
-    return array
-}
-
-public func mergeSort(array: [Int], start: Int, end: Int) {
-    if start < end {
-        let mid = Int((start + end) / 2)
-        mergeSort(array: array, start: start, end: mid)
-        mergeSort(array: array, start: mid+1, end: end)
-        merge(a: array, start: start, mid: mid, end: end)
-    }
+    return result
 }
 
 
@@ -87,4 +79,31 @@ public func nextPermutation(_ array: [Int]) -> [Int] {
         }
     }
     return reverseArray(array, start: k+1, end: array.count-1)
+}
+
+//O(n) S(N)
+public func repeatedAndMissingNumber(_ array: [Int]) -> [Int] {
+    if array.count == 0 || array.count == 1 { return [] }
+    let distinctNumbers = Set(array)
+    let sumDistinctive = distinctNumbers.reduce(0, +)
+    let arithmeticProgression = (array.count * array.count + array.count)/2
+    let repeatedNumber = array.reduce(0, +) - sumDistinctive
+    let missingNumber = arithmeticProgression - sumDistinctive
+    return [repeatedNumber, missingNumber]
+}
+
+// MARK: - Back to back SWE
+public func rotateMatrix(_ matrix: inout [[Int]]) { //square matrix
+    for layer in 0..<matrix.count/2 {
+        let first = layer
+        let last = matrix.count-layer-1
+        for i in first..<last {
+            let offset = i-first
+            let top = matrix[first][i] //save top
+            matrix[first][i] = matrix[last-offset][first] //left->top
+            matrix[last-offset][first] = matrix[last][last-offset] //bottom->left
+            matrix[last][last-offset] = matrix[i][last] //right->bottom
+            matrix[i][last] = top //top->right
+        }
+    }
 }
