@@ -112,3 +112,42 @@ public func minTimeDifference(_ times: [String]) -> Int {
     minDiff = min(minDiff, min(prevTimeSeen!-firstTimeSeen!, 1440-prevTimeSeen!+firstTimeSeen!)) //check the extremes
     return minDiff
 }
+
+//O(log base n) S(n)
+//Convert a positive number n to its digit representation in base b
+public func toDigits(num: String, base: Int) -> String {
+    var result = [String](), n = Int(num) ?? 0
+    while n > 0 {
+        let singleResult = n % base
+        let appendChar: String
+        if singleResult > 9 {
+            appendChar = String(singleResult, radix: base).uppercased()
+        } else {
+            appendChar = String(singleResult)
+        }
+        result.append(appendChar)
+        n /= base
+    }
+    return result.reversed().joined()
+}
+
+//O(n) S(1)
+//Compute the number given by digits in base b
+public func fromDigits(num: String, base: Int) -> String {
+    var result = 0
+    for n in num {
+        var value: Int
+        if n.isNumber {
+           value = Int(String(n)) ?? 0
+        } else {
+            value = n.hexDigitValue ?? 0
+        }
+        result = base * result + value
+    }
+    return String(result)
+}
+
+//Convert the digits representation of a number from base1 to base2 up until base 10
+public func changeBase(num: String, base1: Int, base2: Int) -> String {
+    return toDigits(num: fromDigits(num: num, base: base1), base: base2)
+}
