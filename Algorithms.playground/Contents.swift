@@ -50,6 +50,16 @@ changeBase(num: "12", base1: 10, base2: 2)
 binarySearch([1,2,3,4], searchElem: 5)
 countElementOccurrences([1,1,3,3,5,5,5,9,9], searchElem: 5)
 
+// MARK - Math
+squareSum(5)
+isPrime(2)
+primeNumbersUntil(15)
+sieve(15)
+findDigitsInDecimal(156)
+findDigitsInBinary(125)
+allFactorsN(6)
+allFactorsN(6)
+
 //identify anagrams in a list of words
 
 func repeatedNumber(_ array: [Int]) -> Int {
